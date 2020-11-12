@@ -160,8 +160,8 @@ for(i in 1:length(rasList)){
   }
 }
 
-# save(rasListNDVI, file = "D:/R_projects/CERES_Crop_disturbance/R/CERES_Crop_disturbance/Data/0_NDVI.rda")
-load("D:/R_projects/CERES_Crop_disturbance/R/CERES_Crop_disturbance/Data/0_NDVI.rda")
+# save(rasListNDVI, file = "D:/R_projects/CERES_Crop_disturbance/R/CERES_Crop_disturbance/Data/NDVI/0_NDVI.rda")
+load("D:/R_projects/CERES_Crop_disturbance/R/CERES_Crop_disturbance/Data/NDVI/0_NDVI.rda")
 
 star_pred <- st_as_stars(rasListNDVI[[1]])
 
