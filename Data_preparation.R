@@ -269,6 +269,32 @@ id150 <- plotS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.
 # histogram
 
 
+# Mapview sa vise malih sinhronizovanih
+library(mapview)
+library(leafsync)
+
+viewRGB(x = rasList[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1])
+mapview(rasListNDVI[[1]], na.color = NA, layer.name = "NDVI")
+# Opcija plainview:: paket, n Provides methods for plotting potentially large (raster) images
+# interactively on a plain HTML canvas. In contrast to package 'mapview'
+# data are plotted without background map, but data can be projected to
+# any spatial coordinate reference system.
+
+mapS2parcel <- function(listS2parc = listS2parc, listS2parcNDVI = listS2parcNDVI, files.names = files.names, id = 1){
+  c.map <- viewRGB(x = listS2parc[[id]], r = 3, g = 2, b = 1,  layer.name = files.names[1], query.type = "mousemove", map.types = "Esri.WorldImagery")
+  f.map <- viewRGB(x = listS2parc[[id]], r = 7, g = 3, b = 2,  layer.name = files.names[1], query.type = "mousemove", map.types = "Esri.WorldImagery")
+  n.map <- mapview(listS2parcNDVI[[id]], na.color = NA, layer.name = "NDVI", query.type = "mousemove", map.types = "Esri.WorldImagery")
+  l.map <- leafsync::sync(c.map, 
+                          f.map,
+                          n.map,
+                          ncol = 2)
+  return(l.map)
+}
+
+
+mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
+mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
+
 
 
 
