@@ -296,7 +296,15 @@ mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = fi
 mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
 
 
+# granica parcele (centroid extenta i poligona da se podudaraju)
 
+# productivity je dat, mz fajl
+# hlorofil sracunati
+
+
+# za svaki dan imati label, 
+# putanju, 
+# sf poligon sa promenom,
 
 
 
