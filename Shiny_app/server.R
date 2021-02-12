@@ -29,38 +29,20 @@ library(shinyFiles)
 
 
 
-
 shinyServer(function(input, output, session){
-
-  
 
   shinyFileChoose(input,'button1',roots=getVolumes())
   path1 <- reactive({
     parseFilePaths(getVolumes(), input$button1)
   })
-  # output$filenames <- renderPrint({ path1()$datapath })
+  output$filenames <- renderPrint({ path1()$datapath })
+
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    
 })
+
+
+
+
+
+

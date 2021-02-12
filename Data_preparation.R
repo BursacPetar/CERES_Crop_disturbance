@@ -46,7 +46,7 @@ getwd()
 files <- list.files("D:/R_projects/CERES_Crop_disturbance/Podaci/0/", full.names = TRUE,
                     pattern = ".tif")
 files <- files[-(length(files))]
-# files <- files[sapply(files, file.size) > 0]
+files <- files[sapply(files, file.size) > 0]
 
 # Svaki tif poseban stack
 rasList <- list()
@@ -79,6 +79,8 @@ plotRGB(rasList[[1]],
 files.names <- list.files("D:/R_projects/CERES_Crop_disturbance/Podaci/0/", full.names = F,
                           pattern = ".tif")
 files.names <- files.names[-(length(files.names))]
+files.names <- files.names[sapply(files.names, file.size) > 0]
+
 files.names %<>% stringr::str_remove(., pattern = ".tif")
 
 f.plot <- ggRGB(rasList[[1]], r = 7, g = 3, b = 2) +

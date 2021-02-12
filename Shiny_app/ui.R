@@ -70,7 +70,9 @@ shinyUI(
                                                "Chlorophile" = "v.chl",
                                                "Label" = "v.label",
                                                "Parcel polygon" = "v.polygon",
-                                               "Draw polygon" = "v.draw"))
+                                               "Draw polygon" = "v.draw")),
+                        p(""),
+                        verbatimTextOutput("filenames")
                         
                ),
                tabPanel("LABELING",
