@@ -241,10 +241,10 @@ plotS2parcel <- function(listS2parc = listS2parc, listS2parcNDVI = listS2parcNDV
   return(gridCF)
 }
 
-id1 <- plotS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
-id6 <- plotS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 6)
-id100 <- plotS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 100)
-id150 <- plotS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
+id1 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
+id6 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 6)
+id100 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 100)
+id150 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
 
 
 # df1 <- as.data.frame(rasListNDVI[[1]])
@@ -294,7 +294,7 @@ mapS2parcel <- function(listS2parc = listS2parc, listS2parcNDVI = listS2parcNDVI
 }
 
 
-mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
+mapS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
 mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
 
 
