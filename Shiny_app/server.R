@@ -89,14 +89,16 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
   } else if(v.rgb == FALSE & v.falsh == TRUE){
     gridMap <- f.map
   } else if(v.rgb == TRUE & v.falsh == TRUE & v.ndvi == FALSE){
-    gridMap <- leafsync::sync(c.map, 
-                              f.map,
-                              ncol = 2)
+    gridMap <- c.map + f.map
+    # gridMap <- leafsync::sync(c.map, 
+    #                           f.map,
+    #                           ncol = 2)
   } else if(v.rgb == TRUE & v.falsh == TRUE & v.ndvi == TRUE) {
-    gridMap <- leafsync::sync(c.map, 
-                              f.map,
-                              n.map,
-                              ncol = 2)
+    # gridMap <- leafsync::sync(c.map, 
+    #                           f.map,
+    #                           n.map,
+    #                           ncol = 2)
+    gridMap <- c.map + f.map + n.map
   } else {
     message("v.rgb == FALSE & v.falsh == FALSE")
   }

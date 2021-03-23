@@ -275,8 +275,14 @@ id150 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files
 library(mapview)
 library(leafsync)
 
-viewRGB(x = rasList[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1])
+
+viewRGB(x = rasStack[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1])
 mapview(rasListNDVI[[1]], na.color = NA, layer.name = "NDVI")
+viewRGB(x = rasStack[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1]) + viewRGB(x = rasStack[[1]], r = 7, g = 3, b = 2,  layer.name = files.names[1])
+
+# crs(rasStack[[1]]) <- CRS(SRS_string = "EPSG:32634")
+
+
 # Opcija plainview:: paket, n Provides methods for plotting potentially large (raster) images
 # interactively on a plain HTML canvas. In contrast to package 'mapview'
 # data are plotted without background map, but data can be projected to
