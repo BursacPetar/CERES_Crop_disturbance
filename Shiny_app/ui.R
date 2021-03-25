@@ -118,6 +118,7 @@ shinyUI(
                                  ),
                           column(width = 6,
                                  p(""),
+                                 p("Select minimum 4 dates!"),
                                  DT::dataTableOutput("dates") %>% withSpinner(color="#0dc5c1")
                                  )
                         ),
@@ -127,9 +128,14 @@ shinyUI(
                     fluidRow(
                       # Geovisualisation
                       uiOutput("selector"),
-                      uiOutput("geovis", height = 900) %>% withSpinner(color="#0dc5c1")
-                      
-                      
+                      column(width = 6, 
+                             leafletOutput("geovis1", height = 400) %>% withSpinner(color="#0dc5c1"), #uiOutput
+                             leafletOutput("geovis3", height = 400) %>% withSpinner(color="#0dc5c1")                              
+                             ),
+                      column(width = 6,
+                             leafletOutput("geovis2", height = 400) %>% withSpinner(color="#0dc5c1"),
+                             leafletOutput("geovis4", height = 400) %>% withSpinner(color="#0dc5c1") 
+                             )
                     ),
                     p(""),
                     fluidRow(

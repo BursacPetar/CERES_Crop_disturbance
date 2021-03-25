@@ -54,11 +54,23 @@ my_theme <- function(base_size = 10, base_family = "sans"){
 theme_set(my_theme())
 mycolors=c("#f32440","#2185ef","#d421ef")
 
+find_Rcenter <- function(rasLayer = rasLayer){
+  x_cent <- (extent(rasLayer)[2] + extent(rasLayer)[1])/2
+  y_cent <- (extent(rasLayer)[4] + extent(rasLayer)[3])/2
+  df <- data_frame(x_cent = x_cent, y_cent = y_cent) %>% as.data.frame()
+  return(df)
+}
 
-webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, id = 1, v.rgb = TRUE, v.falsh = TRUE, v.ndvi = TRUE){ # listS2parcNDVI = listS2parcNDVI,
+webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, id = 1, v.rgb = TRUE, v.falsh = TRUE, v.ndvi = TRUE, parcels = parcels){ # listS2parcNDVI = listS2parcNDVI,
+  
+  centroid_coords <- find_Rcenter(rasLayer = listS2parc[[id]])
+  sf_centroid <- st_as_sf(centroid_coords, coords = c("x_cent", "y_cent"), crs = 32634)
+  #pol_contain <- st_contains(parcels, sf_centroid)
+  #parcel <- parcels[unlist(pol_contain), ]
+  parcel <- parcels[sf_centroid, ]
   
   if(v.rgb == TRUE){
-    c.map <- viewRGB(x = listS2parc[[id]], 
+    c.map <- mapview::viewRGB(x = listS2parc[[id]], 
                      r = 3, 
                      g = 2, 
                      b = 1,  
@@ -68,7 +80,7 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
   }
   
   if(v.falsh == TRUE){
-    f.map <- viewRGB(x = listS2parc[[id]], 
+    f.map <- mapview::viewRGB(x = listS2parc[[id]], 
                      r = 7, 
                      g = 3, 
                      b = 2,  
@@ -79,17 +91,21 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
   
   if(v.ndvi == TRUE){
     ndvi <- (listS2parc[[id]][[7]] - listS2parc[[id]][[3]]) / (listS2parc[[id]][[7]] + listS2parc[[id]][[3]])
-    n.map <- mapview(ndvi, na.color = NA, layer.name = "NDVI", query.type = "mousemove", map.types = "Esri.WorldImagery")
+    n.map <- mapview::mapview(ndvi, 
+                              na.color = NA, 
+                              layer.name = "NDVI", 
+                              query.type = "mousemove", 
+                              map.types = "Esri.WorldImagery")
   }
   
-
+  p.map <- mapview(parcel, color = "blue", col.regions = "transparent", alpha.regions = 0, lwd = 2)
   
   if(v.rgb == TRUE & v.falsh == FALSE){
-    gridMap <- c.map
+    gridMap <- c.map + p.map
   } else if(v.rgb == FALSE & v.falsh == TRUE){
-    gridMap <- f.map
+    gridMap <- f.map + p.map
   } else if(v.rgb == TRUE & v.falsh == TRUE & v.ndvi == FALSE){
-    gridMap <- c.map + f.map
+    gridMap <- c.map + f.map + p.map
     # gridMap <- leafsync::sync(c.map, 
     #                           f.map,
     #                           ncol = 2)
@@ -98,7 +114,7 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
     #                           f.map,
     #                           n.map,
     #                           ncol = 2)
-    gridMap <- c.map + f.map + n.map
+    gridMap <- c.map + f.map + n.map + p.map
   } else {
     message("v.rgb == FALSE & v.falsh == FALSE")
   }
@@ -108,6 +124,8 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
   return(gridMap)
 }
 
+
+parcele <- st_read(dsn = "D:/R_projects/CERES_crop_disturbance/Podaci/Parcele.gpkg")
 
 
 shinyServer(function(input, output, session){
@@ -219,16 +237,44 @@ shinyServer(function(input, output, session){
   })
   
   observeEvent(input$label, {
-    output$geovis <- renderUI({
+    output$geovis1 <- renderLeaflet({ #renderUI
       dfdates <- dfnames()
       selected <- input$dates_rows_selected
       namesSel <- dfdates$date[selected]
-      vismap <- webmapS2parcel(listS2parc = imgSelected(), files.names = namesSel, id = as.numeric(input$nid), v.rgb = "v.rgb" %in% input$visSelect, v.falsh = "v.falsh" %in% input$visSelect, v.ndvi = "v.ndvi" %in% input$indSelect)
-      vismap
+      vismap <- webmapS2parcel(listS2parc = imgSelected(), files.names = namesSel, id = as.numeric(input$nid), v.rgb = "v.rgb" %in% input$visSelect, v.falsh = "v.falsh" %in% input$visSelect, v.ndvi = "v.ndvi" %in% input$indSelect, parcels = parcele)
+      vismap@map
     })
   })
   
+  observeEvent(input$label, {
+    output$geovis2 <- renderLeaflet({ #renderUI
+      dfdates <- dfnames()
+      selected <- input$dates_rows_selected
+      namesSel <- dfdates$date[selected]
+      vismap <- webmapS2parcel(listS2parc = imgSelected(), files.names = namesSel, id = as.numeric(input$nid)+1, v.rgb = "v.rgb" %in% input$visSelect, v.falsh = "v.falsh" %in% input$visSelect, v.ndvi = "v.ndvi" %in% input$indSelect, parcels = parcele)
+      vismap@map
+    })
+  })
   
+  observeEvent(input$label, {
+    output$geovis3 <- renderLeaflet({ #renderUI
+      dfdates <- dfnames()
+      selected <- input$dates_rows_selected
+      namesSel <- dfdates$date[selected]
+      vismap <- webmapS2parcel(listS2parc = imgSelected(), files.names = namesSel, id = as.numeric(input$nid)+2, v.rgb = "v.rgb" %in% input$visSelect, v.falsh = "v.falsh" %in% input$visSelect, v.ndvi = "v.ndvi" %in% input$indSelect, parcels = parcele)
+      vismap@map
+    })
+  })
+  
+  observeEvent(input$label, {
+    output$geovis4 <- renderLeaflet({ #renderUI
+      dfdates <- dfnames()
+      selected <- input$dates_rows_selected
+      namesSel <- dfdates$date[selected]
+      vismap <- webmapS2parcel(listS2parc = imgSelected(), files.names = namesSel, id = as.numeric(input$nid)+3, v.rgb = "v.rgb" %in% input$visSelect, v.falsh = "v.falsh" %in% input$visSelect, v.ndvi = "v.ndvi" %in% input$indSelect, parcels = parcele)
+      vismap@map
+    })
+  })
   
   
   # ------------------------------------------------------------------------------------------------------

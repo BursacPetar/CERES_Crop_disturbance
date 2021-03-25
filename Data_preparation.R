@@ -275,10 +275,29 @@ id150 <- plotS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files
 library(mapview)
 library(leafsync)
 
+parcele <- st_read(dsn = "D:/R_projects/CERES_crop_disturbance/Podaci/Parcele.gpkg")
 
 viewRGB(x = rasStack[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1])
 mapview(rasListNDVI[[1]], na.color = NA, layer.name = "NDVI")
 viewRGB(x = rasStack[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1]) + viewRGB(x = rasStack[[1]], r = 7, g = 3, b = 2,  layer.name = files.names[1])
+
+find_Rcenter <- function(rasLayer = rasLayer){
+  x_cent <- (extent(rasLayer)[2] + extent(rasLayer)[1])/2
+  y_cent <- (extent(rasLayer)[4] + extent(rasLayer)[3])/2
+  df <- data_frame(x_cent = x_cent, y_cent = y_cent) %>% as.data.frame()
+  return(df)
+}
+
+p1 <- find_Rcenter(rasLayer = rasStack[[1]])
+
+sf_p1 <- st_as_sf(p1, coords = c("x_cent", "y_cent"), crs = 32634)
+# parc_1 <- st_contains(parcele, sf_p1)
+
+#pc1 <- st_intersection(parcele, sf_p1, join = st_contains)
+ #parcele[unlist(parc_1), ]
+# st_join(sf_p1, parcele, join = st_within)
+pc1 <- parcele[sf_p1, ]
+mapview(sf_p1) + mapview(pc1, color = "DarkViolet", col.regions = NA, alpha.regions = 0, lwd = 2)
 
 # crs(rasStack[[1]]) <- CRS(SRS_string = "EPSG:32634")
 
@@ -288,19 +307,30 @@ viewRGB(x = rasStack[[1]], r = 3, g = 2, b = 1,  layer.name = files.names[1]) + 
 # data are plotted without background map, but data can be projected to
 # any spatial coordinate reference system.
 
-mapS2parcel <- function(listS2parc = listS2parc, listS2parcNDVI = listS2parcNDVI, files.names = files.names, id = 1){
+
+mapS2parcel <- function(listS2parc = listS2parc, listS2parcNDVI = listS2parcNDVI, files.names = files.names, id = 1, parcels = parcels){
+  
+  centroid_coords <- find_Rcenter(rasLayer = listS2parc[[1]])
+  sf_centroid <- st_as_sf(centroid_coords, coords = c("x_cent", "y_cent"), crs = 32634)
+  #pol_contain <- st_contains(parcels, sf_centroid)
+  #parcel <- parcels[unlist(pol_contain), ]
+  parcel <- parcels[sf_centroid, ]
+  
   c.map <- viewRGB(x = listS2parc[[id]], r = 3, g = 2, b = 1,  layer.name = files.names[1], query.type = "mousemove", map.types = "Esri.WorldImagery")
   f.map <- viewRGB(x = listS2parc[[id]], r = 7, g = 3, b = 2,  layer.name = files.names[1], query.type = "mousemove", map.types = "Esri.WorldImagery")
   n.map <- mapview(listS2parcNDVI[[id]], na.color = NA, layer.name = "NDVI", query.type = "mousemove", map.types = "Esri.WorldImagery")
-  l.map <- leafsync::sync(c.map, 
-                          f.map,
-                          n.map,
-                          ncol = 2)
+  p.map <- mapview(parcel, color = "blue", col.regions = "transparent", alpha.regions = 0, lwd = 2)
+  # l.map <- leafsync::sync(c.map, 
+  #                         f.map,
+  #                         n.map,
+  #                         ncol = 2)
+  
+  l.map <- c.map + f.map + n.map + p.map
   return(l.map)
 }
 
 
-mapS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1)
+mapS2parcel(listS2parc = rasStack, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 1, parcels = parcele)
 mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = files.names, id = 150)
 
 
