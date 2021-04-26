@@ -346,3 +346,21 @@ mapS2parcel(listS2parc = rasList, listS2parcNDVI = rasListNDVI, files.names = fi
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

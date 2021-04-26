@@ -98,7 +98,8 @@ webmapS2parcel <- function(listS2parc = listS2parc, files.names = files.names, i
                               map.types = "Esri.WorldImagery")
   }
   
-  p.map <- mapview(parcel, color = "blue", col.regions = "transparent", alpha.regions = 0, lwd = 2)
+  p.map <- mapview(parcel, color = "blue", col.regions = "transparent", alpha.regions = 0, lwd = 2) #%>% 
+    #setView(centroid_coords$x_cent,centroid_coords$y_cent , zoom = 9)
   
   if(v.rgb == TRUE & v.falsh == FALSE){
     gridMap <- c.map + p.map
